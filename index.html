@@ -4,29 +4,43 @@
   <meta charset="UTF-8">
   <title>Customizable Countdown Timer</title>
   <style>
-    body { 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      font-family: Arial, sans-serif; 
-      margin-top: 3rem; 
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
     }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #f9f9f9;
+    }
+
+    #controls {
+      margin-bottom: 2rem;
+    }
+
     #controls input {
-      font-size: 1rem;
-      width: 5rem;
-      padding: 0.3rem;
+      font-size: 1.2rem;
+      width: 6rem;
+      padding: 0.4rem;
       text-align: center;
-      margin-right: 0.5rem;
+      margin-right: 0.7rem;
     }
+
     #controls button {
-      font-size: 1rem;
-      padding: 0.3rem 0.8rem;
-      margin-right: 0.5rem;
+      font-size: 1.1rem;
+      padding: 0.4rem 1rem;
+      margin-right: 0.7rem;
     }
+
     #timer {
-      font-size: 3rem;
+      font-size: 6rem;
       font-weight: bold;
-      margin-top: 1.5rem;
+      color: #222;
+      text-align: center;
     }
   </style>
 </head>
@@ -70,7 +84,7 @@
     function updateDisplay() {
       const formatted = formatTime(remainingSeconds);
       document.getElementById('timer').textContent = formatted;
-      document.title = `${formatted} ⏳`; // Update tab title
+      document.title = `${formatted} ⏳`;
     }
 
     function startTimer() {
