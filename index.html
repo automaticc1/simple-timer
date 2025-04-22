@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Styled Countdown Timer</title>
+  <title>Timer ⏳</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     html, body {
@@ -64,30 +64,50 @@
       margin-top: 0.5rem;
     }
 
-    .neumorphic-btn {
+    .icon-btn {
       background: #f0f4f8;
       border: none;
-      padding: 0.75rem 1.8rem;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #444;
+      padding: 0.75rem;
+      font-size: 1.3rem;
       border-radius: 16px;
       box-shadow:
         4px 4px 12px rgba(0, 0, 0, 0.08),
         -4px -4px 12px rgba(255, 255, 255, 0.9);
       cursor: pointer;
       transition: all 0.2s ease;
+      width: 3.5rem;
+      height: 3.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .neumorphic-btn:active {
+    .icon-btn:active {
       box-shadow:
         inset 2px 2px 6px rgba(0, 0, 0, 0.05),
         inset -2px -2px 6px rgba(255, 255, 255, 0.8);
     }
 
-    .neumorphic-btn:disabled {
+    .icon-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    .icon-btn[title] {
+      position: relative;
+    }
+
+    .icon-btn[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      bottom: -1.8rem;
+      background: #444;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0.9;
     }
   </style>
 </head>
@@ -110,8 +130,9 @@
       >
     </div>
     <div class="button-row">
-      <button id="startBtn" class="neumorphic-btn">Start</button>
-      <button id="resetBtn" class="neumorphic-btn" disabled>Reset</button>
+      <button id="startBtn" class="icon-btn" title="Start">▶</button>
+      <button id="pauseBtn" class="icon-btn" title="Pause" disabled>⏸</button>
+      <button id="resetBtn" class="icon-btn" title="Reset">⟲</button>
     </div>
   </div>
 
@@ -120,6 +141,7 @@
   <script>
     let remainingSeconds = 0;
     let timerId = null;
+    let isPaused = false;
     const originalTitle = document.title;
 
     function formatTime(sec) {
@@ -128,16 +150,37 @@
       return `${m}:${s}`;
     }
 
+    function updateDisplay() {
+      const formatted = formatTime(remainingSeconds);
+      document.getElementById('timer').textContent = formatted;
+      document.title = `${formatted} ⏳`;
+    }
+
     function playBeep() {
       const audio = document.getElementById('endSound');
       audio.currentTime = 0;
       audio.play();
     }
 
-    function updateDisplay() {
-      const formatted = formatTime(remainingSeconds);
-      document.getElementById('timer').textContent = formatted;
-      document.title = `${formatted} ⏳`;
+    function tick() {
+      if (remainingSeconds <= 0) {
+        clearInterval(timerId);
+        timerId = null;
+        updateDisplay();
+        playBeep();
+        document.title = originalTitle;
+        toggleInputs(true);
+      } else {
+        remainingSeconds--;
+        updateDisplay();
+      }
+    }
+
+    function toggleInputs(enable) {
+      document.getElementById('minutesInput').disabled = !enable;
+      document.getElementById('startBtn').disabled = !enable;
+      document.getElementById('pauseBtn').disabled = enable;
+      document.getElementById('resetBtn').disabled = enable;
     }
 
     function startTimer() {
@@ -147,44 +190,46 @@
         return;
       }
 
-      document.getElementById('minutesInput').disabled = true;
-      document.getElementById('startBtn').disabled = true;
-      document.getElementById('resetBtn').disabled = false;
-
       remainingSeconds = Math.ceil(minutes * 60);
       updateDisplay();
+      isPaused = false;
+      toggleInputs(false);
 
-      timerId = setInterval(() => {
-        remainingSeconds--;
-        if (remainingSeconds <= 0) {
-          clearInterval(timerId);
-          timerId = null;
-          remainingSeconds = 0;
-          updateDisplay();
-          playBeep();
-          document.title = originalTitle;
-          document.getElementById('resetBtn').disabled = true;
-          document.getElementById('minutesInput').disabled = false;
-          document.getElementById('startBtn').disabled = false;
-        } else {
-          updateDisplay();
-        }
-      }, 1000);
+      timerId = setInterval(tick, 1000);
+    }
+
+    function pauseTimer() {
+      if (!isPaused) {
+        clearInterval(timerId);
+        isPaused = true;
+        document.getElementById('pauseBtn').textContent = '▶';
+        document.getElementById('pauseBtn').title = 'Resume';
+      } else {
+        timerId = setInterval(tick, 1000);
+        isPaused = false;
+        document.getElementById('pauseBtn').textContent = '⏸';
+        document.getElementById('pauseBtn').title = 'Pause';
+      }
     }
 
     function resetTimer() {
-      if (timerId) clearInterval(timerId);
+      clearInterval(timerId);
       timerId = null;
       remainingSeconds = 0;
       updateDisplay();
       document.title = originalTitle;
-      document.getElementById('minutesInput').disabled = false;
-      document.getElementById('startBtn').disabled = false;
-      document.getElementById('resetBtn').disabled = true;
+      isPaused = false;
+
+      document.getElementById('pauseBtn').textContent = '⏸';
+      document.getElementById('pauseBtn').title = 'Pause';
+
+      toggleInputs(true);
     }
 
     document.getElementById('startBtn').addEventListener('click', startTimer);
+    document.getElementById('pauseBtn').addEventListener('click', pauseTimer);
     document.getElementById('resetBtn').addEventListener('click', resetTimer);
+
     document.getElementById('minutesInput')
       .addEventListener('keypress', e => { if (e.key === 'Enter') startTimer(); });
 
