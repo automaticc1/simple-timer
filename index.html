@@ -53,6 +53,7 @@
   <script>
     let remainingSeconds = 0;
     let timerId = null;
+    const originalTitle = document.title;
 
     function formatTime(sec) {
       const m = String(Math.floor(sec / 60)).padStart(2, '0');
@@ -62,12 +63,14 @@
 
     function playBeep() {
       const audio = document.getElementById('endSound');
-      audio.currentTime = 0; // reset if already played
+      audio.currentTime = 0;
       audio.play();
     }
 
     function updateDisplay() {
-      document.getElementById('timer').textContent = formatTime(remainingSeconds);
+      const formatted = formatTime(remainingSeconds);
+      document.getElementById('timer').textContent = formatted;
+      document.title = `${formatted} ⏳`; // Update tab title
     }
 
     function startTimer() {
@@ -89,8 +92,10 @@
         if (remainingSeconds <= 0) {
           clearInterval(timerId);
           timerId = null;
+          remainingSeconds = 0;
           updateDisplay();
           playBeep();
+          document.title = originalTitle;
           document.getElementById('resetBtn').disabled = true;
           document.getElementById('minutesInput').disabled = false;
           document.getElementById('startBtn').disabled = false;
@@ -105,6 +110,7 @@
       timerId = null;
       remainingSeconds = 0;
       updateDisplay();
+      document.title = originalTitle;
       document.getElementById('minutesInput').disabled = false;
       document.getElementById('startBtn').disabled = false;
       document.getElementById('resetBtn').disabled = true;
