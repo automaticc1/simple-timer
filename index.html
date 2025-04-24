@@ -6,148 +6,42 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏳</text></svg>">
   <style>
-    :root {
-      --gap: 1rem;
-      --font: 'Inter', sans-serif;
-      --bg: #f0f4f8;
-      --fg: #222;
-    }
+    :root { --gap: 1rem; --font: 'Inter', sans-serif; --bg: #f0f4f8; --fg: #222; }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      height: 100vh;
-      font-family: var(--font);
-      display: flex;
-      background: linear-gradient(180deg, #f4f9ff 0%, #fdfdfd 100%);
-    }
-    .pane {
-      padding: var(--gap);
-      overflow-y: auto;
-    }
+    body { margin: 0; height: 100vh; font-family: var(--font); display: flex; background: linear-gradient(180deg, #f4f9ff 0%, #fdfdfd 100%); }
+    .pane { padding: var(--gap); overflow-y: auto; }
     #tasks { width: 35%; background: #fff; border-right: 1px solid #ddd; }
     #timer-pane { flex: 1; display: flex; flex-direction: column; }
     h2 { margin-top: 0; }
     form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-    form input[type="text"], form input[type="number"] {
-      flex: 1;
-      padding: 0.5em;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    form button {
-      padding: 0.5em 1em;
-      border: none;
-      background: #007bff;
-      color: #fff;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+    form input { flex: 1; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+    form button { padding: 0.5em 1em; border: none; background: #007bff; color: #fff; border-radius: 4px; cursor: pointer; }
     ul { list-style: none; padding: 0; margin: 0; }
-    li {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5em;
-      margin-bottom: 0.25em;
-      background: var(--bg);
-      border-radius: 8px;
-      cursor: grab;
-    }
+    li { display: flex; align-items: center; gap: 0.5rem; padding: 0.5em; margin-bottom: 0.25em; background: var(--bg); border-radius: 8px; cursor: grab; }
     li.dragging { opacity: 0.5; }
     .task-name { flex: 2; }
     .task-est { width: 60px; text-align: right; }
-    .btn {
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 0.3em 0.6em;
-      cursor: pointer;
-    }
-    .btn.edit { background: #ffc107; }
-    .btn.delete { background: #dc3545; }
-    .btn:hover { opacity: 0.9; }
-    .btn.start { background: #28a745; }
+    .btn { border: none; background: none; padding: 0.2em; cursor: pointer; font-size: 1em; }
+    .btn.edit, .btn.delete { color: #666; opacity: 0.6; }
+    .btn.edit:hover, .btn.delete:hover { opacity: 1; }
+    .btn.start { background: #28a745; color: #fff; border-radius: 4px; padding: 0.3em 0.6em; font-size: 1em; }
+    .btn.start:hover { opacity: 0.9; }
+    .btn-group { margin-left: auto; display: flex; gap: 0.5em; }
 
-    /* Timer styling */
-    .main {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .timer-display {
-      font-size: 6rem;
-      font-weight: 600;
-      color: var(--fg);
-      text-align: center;
-    }
-    .controls {
-      padding: var(--gap);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-    .neumorphic-input {
-      display: flex;
-      align-items: center;
-      background: var(--bg);
-      border-radius: 16px;
-      box-shadow: inset 2px 2px 5px rgba(0,0,0,0.03), inset -2px -2px 5px rgba(255,255,255,0.8);
-      padding: 0.8rem 1.2rem;
-      width: 220px;
-    }
-    .neumorphic-input input {
-      border: none;
-      background: transparent;
-      font-size: 1.2rem;
-      width: 100%;
-      text-align: center;
-      outline: none;
-      color: #333;
-    }
-    .button-row {
-      display: flex;
-      gap: 1rem;
-      margin-top: 0.5rem;
-    }
-    .icon-btn {
-      background: var(--bg);
-      border: none;
-      padding: 0.75rem;
-      font-size: 1.3rem;
-      border-radius: 16px;
-      box-shadow: 4px 4px 12px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      width: 3.5rem;
-      height: 3.5rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .icon-btn:active {
-      box-shadow: inset 2px 2px 6px rgba(0,0,0,0.05), inset -2px -2px 6px rgba(255,255,255,0.8);
-    }
+    .main { flex: 1; display: flex; justify-content: center; align-items: center; }
+    .timer-display { font-size: 6rem; font-weight: 600; color: var(--fg); text-align: center; }
+    .controls { padding: var(--gap); display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .neumorphic-input { display: flex; align-items: center; background: var(--bg); border-radius: 16px; box-shadow: inset 2px 2px 5px rgba(0,0,0,0.03), inset -2px -2px 5px rgba(255,255,255,0.8); padding: 0.8rem 1.2rem; width: 220px; }
+    .neumorphic-input input { border: none; background: transparent; font-size: 1.2rem; width: 100%; text-align: center; outline: none; color: #333; }
+    .button-row { display: flex; gap: 1rem; margin-top: 0.5rem; }
+    .icon-btn { background: var(--bg); border: none; padding: 0.75rem; font-size: 1.3rem; border-radius: 16px; box-shadow: 4px 4px 12px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9); cursor: pointer; transition: all 0.2s ease; width: 3.5rem; height: 3.5rem; display: flex; justify-content: center; align-items: center; }
+    .icon-btn:active { box-shadow: inset 2px 2px 6px rgba(0,0,0,0.05), inset -2px -2px 6px rgba(255,255,255,0.8); }
     .icon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .icon-btn[title] { position: relative; }
-    .icon-btn[title]:hover::after {
-      content: attr(title);
-      position: absolute;
-      bottom: -1.8rem;
-      background: #444;
-      color: #fff;
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 6px;
-      white-space: nowrap;
-      opacity: 0.9;
-    }
+    .icon-btn[title]:hover::after { content: attr(title); position: absolute; bottom: -1.8rem; background: #444; color: #fff; font-size: 0.7rem; padding: 2px 6px; border-radius: 6px; white-space: nowrap; opacity: 0.9; }
   </style>
 </head>
 <body>
-
   <div id="tasks" class="pane">
     <h2>Tasks</h2>
     <form id="task-form">
@@ -157,15 +51,10 @@
     </form>
     <ul id="task-list"></ul>
   </div>
-
   <div id="timer-pane" class="pane">
-    <div class="main">
-      <div id="timer" class="timer-display">00:00</div>
-    </div>
+    <div class="main"><div id="timer" class="timer-display">00:00</div></div>
     <div class="controls">
-      <div class="neumorphic-input">
-        <input type="number" id="minutesInput" placeholder="Enter minutes" min="0" step="0.1">
-      </div>
+      <div class="neumorphic-input"><input id="minutesInput" type="number" placeholder="Enter minutes" min="0" step="0.1"></div>
       <div class="button-row">
         <button id="startBtn" class="icon-btn" title="Start">▶</button>
         <button id="pauseBtn" class="icon-btn" title="Pause" disabled>⏸</button>
@@ -174,82 +63,87 @@
     </div>
     <audio id="endSound" src="timer-end.mp3" preload="auto"></audio>
   </div>
-
   <script>
-    // ---- Task Management ----
-    const STORAGE_KEY = 'taskTimer.tasks';
-    let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-
-    const taskForm = document.getElementById('task-form');
-    const nameIn = document.getElementById('name-input');
-    const estIn  = document.getElementById('est-input');
-    const list   = document.getElementById('task-list');
-
-    function saveTasks() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-    }
-
-    function renderTasks() {
-      list.innerHTML = '';
-      tasks.forEach((t, i) => {
-        const li = document.createElement('li');
-        li.draggable = true;
-        li.dataset.index = i;
-
-        // Drag handlers
-        li.addEventListener('dragstart', e => {
-          li.classList.add('dragging');
-          e.dataTransfer.setData('text/plain', i);
-        });
-        li.addEventListener('dragend', () => {
-          li.classList.remove('dragging');
-        });
-        li.addEventListener('dragover', e => {
-          e.preventDefault();
-          const over = e.target.closest('li');
-          if (!over || over === li) return;
-          const from = parseInt(e.dataTransfer.getData('text/plain'), 10);
-          const to   = parseInt(over.dataset.index, 10);
-          tasks.splice(to, 0, tasks.splice(from, 1)[0]);
-          saveTasks(); renderTasks();
-        });
-
-        // Content elements
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = t.name;
-        nameSpan.className = 'task-name';
-
-        const estSpan = document.createElement('span');
-        estSpan.textContent = `${t.est} min`;
-        estSpan.className = 'task-est';
-
-        const editBtn = document.createElement('button');
-        editBtn.textContent = '✎';
-        editBtn.className = 'btn edit';
-        editBtn.title = 'Edit task';
-        editBtn.addEventListener('click', () => {
-          const newName = prompt('Task name:', t.name);
-          const newEst = prompt('Estimate (min):', t.est);
-          if (newName !== null && newName.trim() !== '') t.name = newName.trim();
-          const estNum = parseInt(newEst, 10);
-          if (!isNaN(estNum) && estNum >= 0) t.est = estNum;
-          saveTasks(); renderTasks();
-        });
-
-        const delBtn = document.createElement('button');
-        delBtn.textContent = '✕';
-        delBtn.className = 'btn delete';
-        delBtn.title = 'Delete task';
-        delBtn.addEventListener('click', () => {
-          if (confirm('Delete this task?')) {
-            tasks.splice(i, 1);
+    document.addEventListener('DOMContentLoaded', () => {
+      // Task Management
+      const STORAGE_KEY = 'taskTimer.tasks';
+      let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      const taskForm = document.getElementById('task-form');
+      const nameIn = document.getElementById('name-input');
+      const estIn = document.getElementById('est-input');
+      const list = document.getElementById('task-list');
+      function saveTasks() { localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks)); }
+      function renderTasks() {
+        list.innerHTML = '';
+        tasks.forEach((t, i) => {
+          const li = document.createElement('li');
+          li.draggable = true;
+          li.dataset.index = i;
+          // Drag & Drop
+          li.addEventListener('dragstart', e => { li.classList.add('dragging'); e.dataTransfer.setData('text/plain', i); });
+          li.addEventListener('dragend', () => li.classList.remove('dragging'));
+          li.addEventListener('dragover', e => {
+            e.preventDefault();
+            const over = e.target.closest('li');
+            if (!over || over === li) return;
+            const from = parseInt(e.dataTransfer.getData('text/plain'), 10);
+            const to = parseInt(over.dataset.index, 10);
+            tasks.splice(to, 0, tasks.splice(from, 1)[0]);
             saveTasks(); renderTasks();
-          }
+          });
+          // Task Info
+          const nameSpan = document.createElement('span'); nameSpan.textContent = t.name; nameSpan.className = 'task-name';
+          const estSpan = document.createElement('span'); estSpan.textContent = `${t.est} min`; estSpan.className = 'task-est';
+          // Buttons
+          const btnGrp = document.createElement('div'); btnGrp.className = 'btn-group';
+          const editBtn = document.createElement('button'); editBtn.textContent = '✎'; editBtn.className = 'btn edit';
+          editBtn.addEventListener('click', () => {
+            const n = prompt('Name:', t.name);
+            const e = prompt('Est (min):', t.est);
+            if (n !== null) t.name = n.trim();
+            const num = parseInt(e, 10); if (!isNaN(num)) t.est = num;
+            saveTasks(); renderTasks();
+          });
+          const delBtn = document.createElement('button'); delBtn.textContent = '✕'; delBtn.className = 'btn delete';
+          delBtn.addEventListener('click', () => { tasks.splice(i, 1); saveTasks(); renderTasks(); });
+          const startTaskBtn = document.createElement('button'); startTaskBtn.textContent = '▶'; startTaskBtn.className = 'btn start';
+          startTaskBtn.addEventListener('click', () => startWithEstimate(t.est));
+          btnGrp.append(editBtn, delBtn, startTaskBtn);
+          li.append(nameSpan, estSpan, btnGrp);
+          list.appendChild(li);
         });
-
-        const startBtn = document.createElement('button');
-        startBtn.textContent = '▶';
-        startBtn.className = 'btn start';
-        startBtn.title = 'Start this task';
-        startBtn.addEventListener('click', () => startWithEstimate(t.est));
-```
+      }
+      taskForm.addEventListener('submit', e => {
+        e.preventDefault();
+        tasks.push({ name: nameIn.value.trim(), est: parseInt(estIn.value, 10) || 0 });
+        saveTasks(); renderTasks();
+        taskForm.reset(); nameIn.focus();
+      });
+      // Timer Logic
+      let remainingSeconds = 0, timerId = null, isPaused = false;
+      const originalTitle = document.title;
+      const timerDisplay = document.getElementById('timer');
+      const minutesInput = document.getElementById('minutesInput');
+      const startBtn = document.getElementById('startBtn');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const endSound = document.getElementById('endSound');
+      function formatTime(s) { const m = String(Math.floor(s/60)).padStart(2,'0'); const sec = String(s%60).padStart(2,'0'); return `${m}:${sec}`; }
+      function updateDisplay() { timerDisplay.textContent = formatTime(remainingSeconds); document.title = remainingSeconds>0 ? formatTime(remainingSeconds) : originalTitle; }
+      function playBeep() { try { endSound.currentTime = 0; endSound.play(); } catch {} }
+      function tick() { if (remainingSeconds <= 0) { clearInterval(timerId); timerId = null; updateDisplay(); playBeep(); toggleInputs(true); } else { remainingSeconds--; updateDisplay(); } }
+      function toggleInputs(enable) { minutesInput.disabled = !enable; startBtn.disabled = !enable; pauseBtn.disabled = enable; resetBtn.disabled = enable; }
+      function startTimer() { const mins = parseFloat(minutesInput.value); if (isNaN(mins) || mins <= 0) { alert('Enter positive minutes'); return; } remainingSeconds = Math.ceil(mins*60); updateDisplay(); isPaused = false; toggleInputs(false); timerId = setInterval(tick, 1000); }
+      function pauseTimer() { if (!isPaused) { clearInterval(timerId); isPaused = true; pauseBtn.textContent = '▶'; } else { timerId = setInterval(tick, 1000); isPaused = false; pauseBtn.textContent = '⏸'; } }
+      function resetTimer() { clearInterval(timerId); timerId = null; remainingSeconds = 0; updateDisplay(); document.title = originalTitle; isPaused = false; pauseBtn.textContent = '⏸'; toggleInputs(true); }
+      function startWithEstimate(est) { minutesInput.value = est; startTimer(); }
+      startBtn.addEventListener('click', startTimer);
+      pauseBtn.addEventListener('click', pauseTimer);
+      resetBtn.addEventListener('click', resetTimer);
+      minutesInput.addEventListener('keypress', e => { if (e.key === 'Enter') startTimer(); });
+      // Initialize
+      renderTasks(); updateDisplay();
+    });
+  </script>
+</body>
+</html>
