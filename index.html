@@ -14,7 +14,8 @@
     }
     * { box-sizing: border-box; }
     body {
-      margin: 0; height: 100vh;
+      margin: 0;
+      height: 100vh;
       font-family: var(--font);
       display: flex;
       background: linear-gradient(180deg, #f4f9ff 0%, #fdfdfd 100%);
@@ -28,73 +29,125 @@
     h2 { margin-top: 0; }
     form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
     form input[type="text"], form input[type="number"] {
-      flex: 1; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px;
+      flex: 1;
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
     form button {
-      padding: 0.5em 1em; border: none; background: #007bff; color: #fff; border-radius: 4px;
+      padding: 0.5em 1em;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 4px;
       cursor: pointer;
     }
     ul { list-style: none; padding: 0; margin: 0; }
     li {
-      display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.5em; margin-bottom: 0.25em;
-      background: var(--bg); border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5em;
+      margin-bottom: 0.25em;
+      background: var(--bg);
+      border-radius: 8px;
       cursor: grab;
     }
     li.dragging { opacity: 0.5; }
     .task-name { flex: 2; }
     .task-est { width: 60px; text-align: right; }
-    .start-btn {
-      background: #28a745; color: #fff; border: none; border-radius: 4px;
-      padding: 0.3em 0.6em; cursor: pointer;
+    .btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.3em 0.6em;
+      cursor: pointer;
     }
-    .start-btn:hover { opacity: 0.9; }
+    .btn.edit { background: #ffc107; }
+    .btn.delete { background: #dc3545; }
+    .btn:hover { opacity: 0.9; }
+    .btn.start { background: #28a745; }
 
-    /* Timer styling (your original) */
+    /* Timer styling */
     .main {
-      flex: 1; display: flex; justify-content: center; align-items: center;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .timer-display {
-      font-size: 6rem; font-weight: 600; color: var(--fg); text-align: center;
+      font-size: 6rem;
+      font-weight: 600;
+      color: var(--fg);
+      text-align: center;
     }
     .controls {
-      padding: var(--gap); display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      padding: var(--gap);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
     }
     .neumorphic-input {
-      display: flex; align-items: center; background: var(--bg); border-radius: 16px;
+      display: flex;
+      align-items: center;
+      background: var(--bg);
+      border-radius: 16px;
       box-shadow: inset 2px 2px 5px rgba(0,0,0,0.03), inset -2px -2px 5px rgba(255,255,255,0.8);
-      padding: 0.8rem 1.2rem; width: 220px;
+      padding: 0.8rem 1.2rem;
+      width: 220px;
     }
     .neumorphic-input input {
-      border: none; background: transparent; font-size: 1.2rem;
-      width: 100%; text-align: center; outline: none; color: #333;
+      border: none;
+      background: transparent;
+      font-size: 1.2rem;
+      width: 100%;
+      text-align: center;
+      outline: none;
+      color: #333;
     }
     .button-row {
-      display: flex; gap: 1rem; margin-top: 0.5rem;
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
     }
     .icon-btn {
-      background: var(--bg); border: none; padding: 0.75rem; font-size: 1.3rem;
-      border-radius: 16px; box-shadow: 4px 4px 12px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9);
-      cursor: pointer; transition: all 0.2s ease; width: 3.5rem; height: 3.5rem;
-      display: flex; justify-content: center; align-items: center;
+      background: var(--bg);
+      border: none;
+      padding: 0.75rem;
+      font-size: 1.3rem;
+      border-radius: 16px;
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 3.5rem;
+      height: 3.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .icon-btn:active {
       box-shadow: inset 2px 2px 6px rgba(0,0,0,0.05), inset -2px -2px 6px rgba(255,255,255,0.8);
     }
     .icon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .icon-btn[title] {
-      position: relative;
-    }
+    .icon-btn[title] { position: relative; }
     .icon-btn[title]:hover::after {
-      content: attr(title); position: absolute; bottom: -1.8rem;
-      background: #444; color: #fff; font-size: 0.7rem; padding: 2px 6px;
-      border-radius: 6px; white-space: nowrap; opacity: 0.9;
+      content: attr(title);
+      position: absolute;
+      bottom: -1.8rem;
+      background: #444;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
 
-  <!-- Left Pane: Tasks -->
   <div id="tasks" class="pane">
     <h2>Tasks</h2>
     <form id="task-form">
@@ -105,20 +158,13 @@
     <ul id="task-list"></ul>
   </div>
 
-  <!-- Right Pane: Timer -->
   <div id="timer-pane" class="pane">
     <div class="main">
       <div id="timer" class="timer-display">00:00</div>
     </div>
     <div class="controls">
       <div class="neumorphic-input">
-        <input 
-          type="number" 
-          id="minutesInput" 
-          placeholder="Enter minutes" 
-          min="0" 
-          step="0.1"
-        >
+        <input type="number" id="minutesInput" placeholder="Enter minutes" min="0" step="0.1">
       </div>
       <div class="button-row">
         <button id="startBtn" class="icon-btn" title="Start">▶</button>
@@ -158,117 +204,52 @@
         li.addEventListener('dragend', () => {
           li.classList.remove('dragging');
         });
-
-        // Drop zone
         li.addEventListener('dragover', e => {
           e.preventDefault();
           const over = e.target.closest('li');
           if (!over || over === li) return;
-          const from = parseInt(e.dataTransfer.getData('text/plain'));
-          const to   = parseInt(over.dataset.index);
+          const from = parseInt(e.dataTransfer.getData('text/plain'), 10);
+          const to   = parseInt(over.dataset.index, 10);
           tasks.splice(to, 0, tasks.splice(from, 1)[0]);
-          saveTasks();
-          renderTasks();
+          saveTasks(); renderTasks();
         });
 
-        // Content
-        const nameSpan = Object.assign(document.createElement('span'), {
-          textContent: t.name,
-          className: 'task-name'
+        // Content elements
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = t.name;
+        nameSpan.className = 'task-name';
+
+        const estSpan = document.createElement('span');
+        estSpan.textContent = `${t.est} min`;
+        estSpan.className = 'task-est';
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = '✎';
+        editBtn.className = 'btn edit';
+        editBtn.title = 'Edit task';
+        editBtn.addEventListener('click', () => {
+          const newName = prompt('Task name:', t.name);
+          const newEst = prompt('Estimate (min):', t.est);
+          if (newName !== null && newName.trim() !== '') t.name = newName.trim();
+          const estNum = parseInt(newEst, 10);
+          if (!isNaN(estNum) && estNum >= 0) t.est = estNum;
+          saveTasks(); renderTasks();
         });
-        const estSpan  = Object.assign(document.createElement('span'), {
-          textContent: t.est + ' min',
-          className: 'task-est'
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '✕';
+        delBtn.className = 'btn delete';
+        delBtn.title = 'Delete task';
+        delBtn.addEventListener('click', () => {
+          if (confirm('Delete this task?')) {
+            tasks.splice(i, 1);
+            saveTasks(); renderTasks();
+          }
         });
-        const startBtn = Object.assign(document.createElement('button'), {
-          textContent: '▶',
-          className: 'start-btn',
-          title: 'Start this task'
-        });
+
+        const startBtn = document.createElement('button');
+        startBtn.textContent = '▶';
+        startBtn.className = 'btn start';
+        startBtn.title = 'Start this task';
         startBtn.addEventListener('click', () => startWithEstimate(t.est));
-
-        li.append(nameSpan, estSpan, startBtn);
-        list.appendChild(li);
-      });
-    }
-
-    taskForm.addEventListener('submit', e => {
-      e.preventDefault();
-      tasks.push({ name: nameIn.value.trim(), est: parseInt(estIn.value,10) });
-      saveTasks();
-      renderTasks();
-      taskForm.reset();
-      nameIn.focus();
-    });
-
-    // ---- Timer Logic (your original) ----
-    let remainingSeconds = 0, timerId = null, isPaused = false;
-    const originalTitle = document.title;
-
-    const timerDisplay = document.getElementById('timer');
-    const minutesInput = document.getElementById('minutesInput');
-    const startBtn     = document.getElementById('startBtn');
-    const pauseBtn     = document.getElementById('pauseBtn');
-    const resetBtn     = document.getElementById('resetBtn');
-    const endSound     = document.getElementById('endSound');
-
-    function formatTime(sec) {
-      const m = String(Math.floor(sec/60)).padStart(2,'0');
-      const s = String(sec%60).padStart(2,'0');
-      return `${m}:${s}`;
-    }
-    function updateDisplay() {
-      timerDisplay.textContent = formatTime(remainingSeconds);
-      document.title = remainingSeconds>0 ? formatTime(remainingSeconds) : originalTitle;
-    }
-    function playBeep() {
-      try { endSound.muted=false; endSound.currentTime=0; endSound.play(); }
-      catch(e){ console.warn('Audio blocked', e); }
-    }
-    function tick() {
-      if (remainingSeconds<=0) {
-        clearInterval(timerId); timerId=null;
-        updateDisplay(); playBeep(); toggleInputs(true);
-      } else {
-        remainingSeconds--; updateDisplay();
-      }
-    }
-    function toggleInputs(enable) {
-      minutesInput.disabled = !enable;
-      startBtn.disabled      = !enable;
-      pauseBtn.disabled      = enable;
-      resetBtn.disabled      = enable;
-    }
-    function startTimer() {
-      const mins = parseFloat(minutesInput.value);
-      if (isNaN(mins)||mins<=0){ alert('Enter positive minutes'); return; }
-      remainingSeconds = Math.ceil(mins*60);
-      updateDisplay(); isPaused=false; toggleInputs(false);
-      timerId = setInterval(tick, 1000);
-    }
-    function pauseTimer() {
-      if (!isPaused) { clearInterval(timerId); isPaused=true; pauseBtn.textContent='▶'; pauseBtn.title='Resume'; }
-      else           { timerId = setInterval(tick,1000); isPaused=false; pauseBtn.textContent='⏸'; pauseBtn.title='Pause'; }
-    }
-    function resetTimer() {
-      clearInterval(timerId); timerId=null; remainingSeconds=0;
-      updateDisplay(); document.title=originalTitle; isPaused=false;
-      pauseBtn.textContent='⏸'; pauseBtn.title='Pause';
-      toggleInputs(true);
-    }
-    function startWithEstimate(est) {
-      minutesInput.value = est;
-      startTimer();
-    }
-
-    startBtn.addEventListener('click', startTimer);
-    pauseBtn.addEventListener('click', pauseTimer);
-    resetBtn.addEventListener('click', resetTimer);
-    minutesInput.addEventListener('keypress', e => { if (e.key==='Enter') startTimer(); });
-
-    // ---- Init ----
-    renderTasks();
-    updateDisplay();
-  </script>
-</body>
-</html>
+```
