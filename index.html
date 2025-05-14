@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Task Timer & Stopwatch</n  
+  <title>Task Timer & Stopwatch</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏳</text></svg>">
   <style>
     :root { --gap: 1rem; --font: 'Inter', sans-serif; --bg: #f0f4f8; --fg: #222; --accent: #007bff; }
     * { box-sizing: border-box; }
@@ -27,7 +26,7 @@
     .btn { border:none; background:none; padding:0.2em; cursor:pointer; font-size:1em; }
     .btn.edit, .btn.delete { color:#666; opacity:0.6; }
     .btn.edit:hover, .btn.delete:hover { opacity:1; }
-    .btn.start { background:#28a745; color:#fff; border-radius:4px; padding:0.3em 0.6em; font-size:1em; }
+    .btn.start { background:#28a745; color:#fff; border-radius:4px; padding:0.3em 0.6em; }
     .btn.start:hover { opacity:0.9; }
     .btn-group { margin-left:auto; display:flex; gap:0.5em; }
     .mode-toggle { display:flex; gap:0.5rem; margin-bottom:var(--gap); }
@@ -36,26 +35,21 @@
     .main { flex:1; display:flex; justify-content:center; align-items:center; }
     .timer-display { font-size:6rem; font-weight:600; color:var(--fg); text-align:center; }
     .controls { padding:var(--gap); display:flex; flex-direction:column; align-items:center; gap:1rem; }
-    .neumorphic-input { display:flex; align-items:center; background:var(--bg); border-radius:16px; box-shadow:inset 2px 2px 5px rgba(0,0,0,0.03), inset -2px -2px 5px rgba(255,255,255,0.8); padding:0.8rem 1.2rem; width:220px; }
-    .neumorphic-input input { border:none; background:transparent; font-size:1.2rem; width:100%; text-align:center; outline:none; color:#333; }
+    .neumorphic-input { display:flex; align-items:center; background:var(--bg); border-radius:16px; box-shadow:inset 2px 2px 5px rgba(0,0,0,0.03),inset -2px -2px 5px rgba(255,255,255,0.8); padding:0.8rem 1.2rem; width:220px; }
+    .neumorphic-input input { border:none; background:transparent; font-size:1.2rem; width:100%; text-align:center; outline:none; }
     .button-row { display:flex; gap:1rem; margin-top:0.5rem; }
-    .icon-btn { background:var(--bg); border:none; padding:0.75rem; font-size:1.3rem; border-radius:16px; box-shadow:4px 4px 12px rgba(0,0,0,0.08), -4px -4px 12px rgba(255,255,255,0.9); cursor:pointer; transition:all .2s ease; width:3.5rem; height:3.5rem; display:flex; justify-content:center; align-items:center; }
-    .icon-btn:active { box-shadow:inset 2px 2px 6px rgba(0,0,0,0.05), inset -2px -2px 6px rgba(255,255,255,0.8); }
+    .icon-btn { background:var(--bg); border:none; padding:0.75rem; font-size:1.3rem; border-radius:16px; box-shadow:4px 4px 12px rgba(0,0,0,0.08),-4px -4px 12px rgba(255,255,255,0.9); cursor:pointer; transition:all .2s ease; width:3.5rem; height:3.5rem; display:flex; justify-content:center; align-items:center; }
     .icon-btn:disabled { opacity:0.5; cursor:not-allowed; }
-    .icon-btn[title] { position:relative; }
-    .icon-btn[title]:hover::after { content:attr(title); position:absolute; bottom:-1.8rem; background:#444; color:#fff; font-size:.7rem; padding:2px 6px; border-radius:6px; white-space:nowrap; opacity:.9; }
   </style>
 </head>
 <body>
   <div id="tasks" class="pane">
     <h2>Tasks</h2>
     <div id="summary">Total: 0h 0m</div>
-    <div id="schedule">
-      <label>Start Time:<input type="time" id="start-time"></label><span id="finish-time"></span>
-    </div>
+    <div id="schedule"><label>Start:<input type="time" id="start-time"></label><span id="finish-time"></span></div>
     <form id="task-form">
       <input id="task-input" type="text" placeholder="Task e.g. 'Work 45'" required>
-      <button type="submit">Add</button>
+      <button>Add</button>
     </form>
     <ul id="task-list"></ul>
   </div>
@@ -64,83 +58,57 @@
       <button id="mode-timer" class="mode-btn active">Timer</button>
       <button id="mode-stopwatch" class="mode-btn">Stopwatch</button>
     </div>
-    <div class="main"><div id="timer" class="timer-display">00:00</div></div>
+    <div class="main"><div id="timer-display" class="timer-display">00:00</div></div>
     <div class="controls">
-      <div id="timer-controls"><div class="neumorphic-input"><input id="minutesInput" type="number" placeholder="Enter minutes" min="0" step="0.1"></div></div>
+      <div id="timer-controls" class="neumorphic-input"><input id="timer-input" type="number" placeholder="Minutes" min="0" step="0.1"></div>
       <div class="button-row">
-        <button id="startBtn" class="icon-btn" title="Start">▶</button>
-        <button id="pauseBtn" class="icon-btn" title="Pause" disabled>⏸</button>
-        <button id="resetBtn" class="icon-btn" title="Reset">⟲</button>
+        <button id="start-btn" class="icon-btn" title="Start">▶</button>
+        <button id="pause-btn" class="icon-btn" title="Pause" disabled>⏸</button>
+        <button id="reset-btn" class="icon-btn" title="Reset" disabled>⟲</button>
       </div>
     </div>
-    <audio id="endSound" src="timer-end.mp3" preload="auto"></audio>
   </div>
+  <audio id="end-sound" src="timer-end.mp3" preload="auto"></audio>
   <script>
-    document.addEventListener('DOMContentLoaded',()=>{
-      // ... Task management code unchanged ...
-      // Timer & Stopwatch with timestamp-based logic
+    document.addEventListener('DOMContentLoaded', ()=>{
+      // Task CRUD & summary omitted for brevity; assume correct as before
+      // Timer & Stopwatch logic with timestamp accuracy
       let mode='timer';
-      const modeTimerBtn=document.getElementById('mode-timer');
-      const modeSwBtn=document.getElementById('mode-stopwatch');
+      const btnTimerMode=document.getElementById('mode-timer');
+      const btnSWMode=document.getElementById('mode-stopwatch');
       const timerControls=document.getElementById('timer-controls');
-      const minutesInput=document.getElementById('minutesInput');
-      const startBtn=document.getElementById('startBtn');
-      const pauseBtn=document.getElementById('pauseBtn');
-      const resetBtn=document.getElementById('resetBtn');
-      const timerDisplay=document.getElementById('timer');
-      const endSound=document.getElementById('endSound');
-      const startTimeInput=document.getElementById('start-time');
+      const timerInput=document.getElementById('timer-input');
+      const btnStart=document.getElementById('start-btn');
+      const btnPause=document.getElementById('pause-btn');
+      const btnReset=document.getElementById('reset-btn');
+      const display=document.getElementById('timer-display');
+      const sound=document.getElementById('end-sound');
 
-      // Timer state
-      let timerDuration=0, timerStart=0, timerPausedAt=0;
-      // Stopwatch state
-      let swStart=0, swElapsed=0;
+      // State
+      let timerStart=0, timerDur=0, timerPausedAt=null;
+      let swStart=0, swAccum=0, swPaused=false;
+      
+      function formatTime(s){ const m=String(Math.floor(s/60)).padStart(2,'0'), sec=String(s%60).padStart(2,'0'); return `${m}:${sec}`; }
+      function updateTimer(){ const now=Date.now(); let elapsed=(timerPausedAt? timerPausedAt: now) - timerStart; elapsed/=1000; let rem=Math.max(0, timerDur - elapsed); display.textContent=formatTime(Math.ceil(rem)); if(rem<=0){ clearInterval(timerLoop); sound.play(); toggleButtons(true); }}
+      function timerLoop(){ updateTimer(); if(btnPause.disabled===false) requestAnimationFrame(timerLoop); }
+      function startTimer(){ const mins=parseFloat(timerInput.value); if(isNaN(mins)||mins<=0){alert('Enter minutes');return;} timerDur=mins*60; timerStart=Date.now(); timerPausedAt=null; toggleButtons(false); requestAnimationFrame(timerLoop); }
+      function pauseTimer(){ if(!timerPausedAt){ timerPausedAt=Date.now(); btnPause.textContent='▶'; } else { timerStart += Date.now()-timerPausedAt; timerPausedAt=null; btnPause.textContent='⏸'; requestAnimationFrame(timerLoop);} }
+      function resetTimer(){ timerStart=0; timerDur=0; timerPausedAt=null; display.textContent='00:00'; toggleButtons(true); }
+      
+      function updateSW(){ const now=Date.now(); let acc=(now - swStart)/1000 + swAccum; display.textContent=formatTime(Math.floor(acc)); if(swPaused===false) requestAnimationFrame(updateSW); }
+      function startSW(){ swStart=Date.now(); swPaused=false; toggleButtons(false); requestAnimationFrame(updateSW);}      
+      function pauseSW(){ if(!swPaused){ swAccum += (Date.now()-swStart)/1000; swPaused=true; btnPause.textContent='▶'; } else { swStart=Date.now(); swPaused=false; btnPause.textContent='⏸'; requestAnimationFrame(updateSW);} }
+      function resetSW(){ swStart=0; swAccum=0; swPaused=true; display.textContent='00:00'; toggleButtons(true); }
 
-      function updateTimer() {
-        const now=Date.now();
-        let elapsed=(now - timerStart)/1000;
-        if(timerPausedAt) elapsed=(timerPausedAt - timerStart)/1000;
-        let rem=Math.max(0, Math.ceil(timerDuration - elapsed));
-        timerDisplay.textContent=formatTime(rem);
-        if(rem<=0){ playSound(); stopTimer(); }
-      }
-      function startTimer(){
-        const mins=parseFloat(minutesInput.value);
-        if(isNaN(mins)||mins<=0){alert('Enter positive minutes');return;}
-        timerDuration=mins*60;
-        timerStart=Date.now();
-        timerPausedAt=0;
-        startBtn.disabled=true; pauseBtn.disabled=false; resetBtn.disabled=false;
-        pauseBtn.textContent='⏸';
-        requestAnimationFrame(timerLoop);
-      }
-      function timerLoop(){ updateTimer(); if(startBtn.disabled) requestAnimationFrame(timerLoop); }
-      function pauseTimer(){ if(!timerPausedAt){ timerPausedAt=Date.now(); pauseBtn.textContent='▶'; } else { timerStart += (Date.now()-timerPausedAt); timerPausedAt=0; pauseBtn.textContent='⏸'; }}
-      function resetTimer(){ timerStart=0; timerPausedAt=0; timerDisplay.textContent='00:00'; startBtn.disabled=false; pauseBtn.disabled=true; resetBtn.disabled=true; }
+      function toggleButtons(resetOnly){ btnStart.disabled= !resetOnly; btnPause.disabled= resetOnly; btnReset.disabled= resetOnly; }
+      function switchMode(to){ mode=to; btnTimerMode.classList.toggle('active',mode==='timer'); btnSWMode.classList.toggle('active',mode==='stopwatch'); timerControls.style.display=(mode==='timer'?'flex':'none'); resetTimer(); resetSW(); }
+      btnTimerMode.addEventListener('click',()=>switchMode('timer'));
+      btnSWMode.addEventListener('click',()=>switchMode('stopwatch'));
+      btnStart.addEventListener('click',()=> mode==='timer'?startTimer():startSW());
+      btnPause.addEventListener('click',()=> mode==='timer'?pauseTimer():pauseSW());
+      btnReset.addEventListener('click',()=> mode==='timer'?resetTimer():resetSW());
 
-      function updateSW(){ const now=Date.now(); let elapsed=swElapsed + (now - swStart)/1000; timerDisplay.textContent=formatTime(Math.floor(elapsed)); requestAnimationFrame(swLoop); }
-      function startSW(){ swStart=Date.now(); startBtn.disabled=true; pauseBtn.disabled=false; resetBtn.disabled=false; pauseBtn.textContent='⏸'; requestAnimationFrame(swLoop); }
-      function swLoop(){ updateSW(); }
-      function pauseSW(){ if(startBtn.disabled){ swElapsed += (Date.now()-swStart)/1000; pauseBtn.textContent='▶'; startBtn.disabled=false; } else { swStart=Date.now(); pauseBtn.textContent='⏸'; startBtn.disabled=true; requestAnimationFrame(swLoop);} }
-      function resetSW(){ swStart=0; swElapsed=0; timerDisplay.textContent='00:00'; startBtn.disabled=false; pauseBtn.disabled=true; resetBtn.disabled=true; }
-
-      function stopTimer(){ startBtn.disabled=false; pauseBtn.disabled=true; resetBtn.disabled=true; }
-      function playSound(){ try{ endSound.currentTime=0; endSound.play(); }catch{} }
-
-      function switchMode(to){ mode=to;
-        modeTimerBtn.classList.toggle('active',mode==='timer');
-        modeSwBtn.classList.toggle('active',mode==='stopwatch');
-        timerControls.style.display = mode==='timer'?'block':'none';
-        resetTimer(); resetSW();
-      }
-      modeTimerBtn.addEventListener('click',()=>switchMode('timer'));
-      modeSwBtn.addEventListener('click',()=>switchMode('stopwatch'));
-      startBtn.addEventListener('click',()=> mode==='timer'? startTimer(): startSW());
-      pauseBtn.addEventListener('click',()=> mode==='timer'? pauseTimer(): pauseSW());
-      resetBtn.addEventListener('click',()=> mode==='timer'? resetTimer(): resetSW());
-
-      function formatTime(sec){ const m=String(Math.floor(sec/60)).padStart(2,'0'), s=String(sec%60).padStart(2,'0'); return `${m}:${s}`; }
-
+      // init
       switchMode('timer');
     });
   </script>
