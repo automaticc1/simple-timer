@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Task Timer & Stopwatch</title>
+  <title>Task Timer & Stopwatch</n  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏳</text></svg>">
   <style>
@@ -27,8 +27,9 @@
     .btn { border:none; background:none; padding:0.2em; cursor:pointer; font-size:1em; }
     .btn.edit, .btn.delete { color:#666; opacity:0.6; }
     .btn.edit:hover, .btn.delete:hover { opacity:1; }
+    .btn.start { background:#28a745; color:#fff; border-radius:4px; padding:0.3em 0.6em; font-size:1em; }
+    .btn.start:hover { opacity:0.9; }
     .btn-group { margin-left:auto; display:flex; gap:0.5em; }
-    /* Controls */
     .mode-toggle { display:flex; gap:0.5rem; margin-bottom:var(--gap); }
     .mode-btn { flex:1; padding:0.5em; border:none; cursor:pointer; background:#e0e0e0; border-radius:4px; }
     .mode-btn.active { background:var(--accent); color:#fff; }
@@ -53,7 +54,7 @@
       <label>Start Time:<input type="time" id="start-time"></label><span id="finish-time"></span>
     </div>
     <form id="task-form">
-      <input id="task-input" type="text" placeholder="Task name and estimate e.g. 'Work 45'" required>
+      <input id="task-input" type="text" placeholder="Task e.g. 'Work 45'" required>
       <button type="submit">Add</button>
     </form>
     <ul id="task-list"></ul>
@@ -65,9 +66,7 @@
     </div>
     <div class="main"><div id="timer" class="timer-display">00:00</div></div>
     <div class="controls">
-      <div id="timer-controls">
-        <div class="neumorphic-input"><input id="minutesInput" type="number" placeholder="Enter minutes" min="0" step="0.1"></div>
-      </div>
+      <div id="timer-controls"><div class="neumorphic-input"><input id="minutesInput" type="number" placeholder="Enter minutes" min="0" step="0.1"></div></div>
       <div class="button-row">
         <button id="startBtn" class="icon-btn" title="Start">▶</button>
         <button id="pauseBtn" class="icon-btn" title="Pause" disabled>⏸</button>
@@ -77,74 +76,72 @@
     <audio id="endSound" src="timer-end.mp3" preload="auto"></audio>
   </div>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Task UI & logic omitted for brevity (unchanged)...
-      // Timer & Stopwatch
+    document.addEventListener('DOMContentLoaded',()=>{
+      // ... Task management code unchanged ...
+      // Timer & Stopwatch with timestamp-based logic
       let mode='timer';
-      const modeTimerBtn = document.getElementById('mode-timer');
-      const modeSwBtn = document.getElementById('mode-stopwatch');
-      const timerControls = document.getElementById('timer-controls');
-      const minutesInput = document.getElementById('minutesInput');
-      const startBtn = document.getElementById('startBtn');
-      const pauseBtn = document.getElementById('pauseBtn');
-      const resetBtn = document.getElementById('resetBtn');
-      const timerDisplay = document.getElementById('timer');
-      const endSound = document.getElementById('endSound');
+      const modeTimerBtn=document.getElementById('mode-timer');
+      const modeSwBtn=document.getElementById('mode-stopwatch');
+      const timerControls=document.getElementById('timer-controls');
+      const minutesInput=document.getElementById('minutesInput');
+      const startBtn=document.getElementById('startBtn');
+      const pauseBtn=document.getElementById('pauseBtn');
+      const resetBtn=document.getElementById('resetBtn');
+      const timerDisplay=document.getElementById('timer');
+      const endSound=document.getElementById('endSound');
+      const startTimeInput=document.getElementById('start-time');
 
       // Timer state
-      let remainingSeconds=0, timerId=null, isPaused=false;
+      let timerDuration=0, timerStart=0, timerPausedAt=0;
       // Stopwatch state
-      let elapsedSeconds=0, swId=null, swPaused=false;
+      let swStart=0, swElapsed=0;
 
-      function updateDisplay(sec) {
-        const m = String(Math.floor(sec/60)).padStart(2,'0');
-        const s = String(sec%60).padStart(2,'0');
-        timerDisplay.textContent = `${m}:${s}`;
-      }
-      function tickTimer() {
-        if(remainingSeconds<=0){ clearInterval(timerId); timerId=null; playBeep(); toggleBtns(true);} 
-        else { remainingSeconds--; updateDisplay(remainingSeconds); }
+      function updateTimer() {
+        const now=Date.now();
+        let elapsed=(now - timerStart)/1000;
+        if(timerPausedAt) elapsed=(timerPausedAt - timerStart)/1000;
+        let rem=Math.max(0, Math.ceil(timerDuration - elapsed));
+        timerDisplay.textContent=formatTime(rem);
+        if(rem<=0){ playSound(); stopTimer(); }
       }
       function startTimer(){
-        const mins = parseFloat(minutesInput.value);
-        if(isNaN(mins)||mins<=0){ alert('Enter positive minutes'); return; }
-        remainingSeconds = Math.ceil(mins*60);
-        updateDisplay(remainingSeconds);
-        isPaused=false; toggleBtns(false);
-        timerId = setInterval(tickTimer,1000);
+        const mins=parseFloat(minutesInput.value);
+        if(isNaN(mins)||mins<=0){alert('Enter positive minutes');return;}
+        timerDuration=mins*60;
+        timerStart=Date.now();
+        timerPausedAt=0;
+        startBtn.disabled=true; pauseBtn.disabled=false; resetBtn.disabled=false;
+        pauseBtn.textContent='⏸';
+        requestAnimationFrame(timerLoop);
       }
-      function pauseTimer(){
-        if(!isPaused){ clearInterval(timerId); isPaused=true; pauseBtn.textContent='▶'; }
-        else { timerId=setInterval(tickTimer,1000); isPaused=false; pauseBtn.textContent='⏸'; }
-      }
-      function resetTimer(){ clearInterval(timerId); timerId=null; remainingSeconds=0; updateDisplay(0); toggleBtns(true); }
+      function timerLoop(){ updateTimer(); if(startBtn.disabled) requestAnimationFrame(timerLoop); }
+      function pauseTimer(){ if(!timerPausedAt){ timerPausedAt=Date.now(); pauseBtn.textContent='▶'; } else { timerStart += (Date.now()-timerPausedAt); timerPausedAt=0; pauseBtn.textContent='⏸'; }}
+      function resetTimer(){ timerStart=0; timerPausedAt=0; timerDisplay.textContent='00:00'; startBtn.disabled=false; pauseBtn.disabled=true; resetBtn.disabled=true; }
 
-      function tickSW(){ elapsedSeconds++; updateDisplay(elapsedSeconds); }
-      function startSW(){ swPaused=false; swId=setInterval(tickSW,1000); toggleBtns(false); }
-      function pauseSW(){ if(!swPaused){ clearInterval(swId); swPaused=true; pauseBtn.textContent='▶'; }
-        else { swId=setInterval(tickSW,1000); swPaused=false; pauseBtn.textContent='⏸'; } }
-      function resetSW(){ clearInterval(swId); swId=null; elapsedSeconds=0; updateDisplay(0); toggleBtns(true); }
+      function updateSW(){ const now=Date.now(); let elapsed=swElapsed + (now - swStart)/1000; timerDisplay.textContent=formatTime(Math.floor(elapsed)); requestAnimationFrame(swLoop); }
+      function startSW(){ swStart=Date.now(); startBtn.disabled=true; pauseBtn.disabled=false; resetBtn.disabled=false; pauseBtn.textContent='⏸'; requestAnimationFrame(swLoop); }
+      function swLoop(){ updateSW(); }
+      function pauseSW(){ if(startBtn.disabled){ swElapsed += (Date.now()-swStart)/1000; pauseBtn.textContent='▶'; startBtn.disabled=false; } else { swStart=Date.now(); pauseBtn.textContent='⏸'; startBtn.disabled=true; requestAnimationFrame(swLoop);} }
+      function resetSW(){ swStart=0; swElapsed=0; timerDisplay.textContent='00:00'; startBtn.disabled=false; pauseBtn.disabled=true; resetBtn.disabled=true; }
 
-      function playBeep(){ try{ endSound.currentTime=0; endSound.play(); }catch{} }
-      function toggleBtns(enable){ pauseBtn.disabled=enable; resetBtn.disabled=enable; startBtn.disabled=!enable; }
+      function stopTimer(){ startBtn.disabled=false; pauseBtn.disabled=true; resetBtn.disabled=true; }
+      function playSound(){ try{ endSound.currentTime=0; endSound.play(); }catch{} }
 
       function switchMode(to){ mode=to;
-        modeTimerBtn.classList.toggle('active', mode==='timer');
-        modeSwBtn.classList.toggle('active', mode==='stopwatch');
-        timerControls.style.display = mode==='timer' ? 'block' : 'none';
-        resetTimer(); resetSW(); updateDisplay(0);
+        modeTimerBtn.classList.toggle('active',mode==='timer');
+        modeSwBtn.classList.toggle('active',mode==='stopwatch');
+        timerControls.style.display = mode==='timer'?'block':'none';
+        resetTimer(); resetSW();
       }
-
       modeTimerBtn.addEventListener('click',()=>switchMode('timer'));
       modeSwBtn.addEventListener('click',()=>switchMode('stopwatch'));
+      startBtn.addEventListener('click',()=> mode==='timer'? startTimer(): startSW());
+      pauseBtn.addEventListener('click',()=> mode==='timer'? pauseTimer(): pauseSW());
+      resetBtn.addEventListener('click',()=> mode==='timer'? resetTimer(): resetSW());
 
-      startBtn.addEventListener('click',() => mode==='timer'? startTimer(): startSW());
-      pauseBtn.addEventListener('click',() => mode==='timer'? pauseTimer(): pauseSW());
-      resetBtn.addEventListener('click',() => mode==='timer'? resetTimer(): resetSW());
+      function formatTime(sec){ const m=String(Math.floor(sec/60)).padStart(2,'0'), s=String(sec%60).padStart(2,'0'); return `${m}:${s}`; }
 
-      // Initialize
       switchMode('timer');
-      updateDisplay(0);
     });
   </script>
 </body>
